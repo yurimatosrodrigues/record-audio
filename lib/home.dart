@@ -55,43 +55,46 @@ class _HomeState extends State<Home>{
     );
   }
 
-  Widget _buildUI(){
+  Widget _buildUI() {
     return SizedBox(
       width: MediaQuery.sizeOf(context).width,
+      height: MediaQuery.sizeOf(context).height,
       child: Container(
         color: Colors.white,
-        child: Column(        
+        
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            if(recordingPath != null) 
-              MaterialButton(
-                onPressed: () async {
-                  if(audioPlayer.playing){
-                    audioPlayer.stop();
-
-                    setState(() {
-                      isPlaying = false;
-                    });
-                  }
-                  else{
-                    await audioPlayer.setFilePath(recordingPath!);
-                    audioPlayer.play();
-                    setState(() {
-                      isPlaying = true;
-                    });
-                  }
-
-                },
-                color: Theme.of(context).colorScheme.primary,
-                child: Text(isPlaying ? "Stop Playing Recording" : "Start Playing Recording"),
+            Text(
+              '00:00:00',              
+              style: TextStyle(
+                fontSize: 50
               ),
-
-            if(recordingPath == null)
-              const Text("No Recording Found."),
-        ]
-      ),
-      )      
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,              
+              children: [
+                Icon(
+                  Icons.mic,
+                  size: 80, 
+                  color: Colors.red,
+                ),
+                Icon(              
+                  Icons.pause,
+                  size: 100,               
+                ),
+                Icon(
+                  Icons.stop,
+                  size: 110,
+                )
+              ],
+            )                 
+          ],
+        ) 
+      )
     );
   }
 
