@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart'; 
 import 'dart:io';
 import 'package:just_audio/just_audio.dart';
@@ -71,25 +72,49 @@ class _HomeState extends State<Home>{
                 fontSize: 50
               ),
             ),
-            SizedBox(
-              height: 20,
-            ),
+           
             Row(
               mainAxisAlignment: MainAxisAlignment.center,              
               children: [
-                Icon(
-                  Icons.mic,
-                  size: 80, 
-                  color: Colors.red,
+                IconButton(
+                  icon: const Icon(Icons.mic),
+                  iconSize: 80, 
+                  color: Colors.red, 
+                  onPressed: () {  
+                    showDialog(
+                      context: context, 
+                      builder: (BuildContext context){
+                        return SimpleDialog(
+                          title: Text('tst'),
+                          children: <Widget>[
+                            SimpleDialogOption(
+                              onPressed: (){ Navigator.pop(context); },
+                              child: const Text('Teste'),
+                            )
+                      ],
+                    );
+                      }
+                    );                    
+                  }
                 ),
-                Icon(              
-                  Icons.pause,
-                  size: 100,               
+                IconButton(
+                  icon: Icon(Icons.pause),
+                  iconSize: 80,
+                  onPressed: () => {
+                  },
                 ),
-                Icon(
-                  Icons.stop,
-                  size: 110,
-                )
+                IconButton(
+                  icon: Icon(Icons.stop),
+                  iconSize: 80,
+                  onPressed: () => {
+                  }
+                ),
+                IconButton(
+                  icon: Icon(Icons.play_arrow),
+                  iconSize: 80,
+                  onPressed: () => {
+                  }
+                ),
               ],
             )                 
           ],
