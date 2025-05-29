@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 
-class ListAudio extends StatefulWidget{
+class ListAudio extends StatefulWidget {
   @override
   _ListAudioState createState() => _ListAudioState();
-  
 }
 
-class _ListAudioState extends State<ListAudio>{
-
+class _ListAudioState extends State<ListAudio> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -22,11 +20,9 @@ class _ListAudioState extends State<ListAudio>{
               color: Colors.amber[100],
               child: Text('Teste'),
             ),
-            
           ],
         ),
       ),
     );
   }
-
 }

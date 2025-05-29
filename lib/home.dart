@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
@@ -6,7 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:record/record.dart';
-import 'package:record_audio/list-audio.dart';
+import 'package:record_audio/list_audio.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -21,6 +23,9 @@ class _HomeState extends State<Home> {
 
   String? recordingPath;
   bool isRecording = false, isPaused = false, isPlaying = false;
+
+  Duration duration = Duration();
+  Timer? timer;
 
   Widget _buildBackIcon() {
     return IconButton(
@@ -40,6 +45,7 @@ class _HomeState extends State<Home> {
                       Navigator.of(context).pop();
                       setState(() {
                         isRecording = false;
+                        _stopTimer();
                       });
                     },
                   ),
@@ -65,6 +71,7 @@ class _HomeState extends State<Home> {
         setState(() {
           isRecording = true;
           isPaused = false;
+          _startTimer();
         });
       },
     );
@@ -78,6 +85,7 @@ class _HomeState extends State<Home> {
           () => {
             setState(() {
               isPaused = true;
+              _stopTimer(reset: false);
             }),
           },
     );
@@ -92,12 +100,13 @@ class _HomeState extends State<Home> {
             setState(() {
               isRecording = false;
               isPaused = false;
+              _stopTimer();
             }),
           },
     );
   }
 
-  Widget _buildIcons() {
+  Widget _buildActionButtons() {
     if (!isRecording) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -118,6 +127,40 @@ class _HomeState extends State<Home> {
     }
   }
 
+  void _addTime() {
+    final addSeconds = 1;
+
+    setState(() {
+      final seconds = duration.inSeconds + addSeconds;
+
+      duration = Duration(seconds: seconds);
+    });
+  }
+
+  void _startTimer() {
+    timer = Timer.periodic(Duration(seconds: 1), (_) => _addTime());
+  }
+
+  void _stopTimer({bool reset = true}) {
+    if (reset) {
+      setState(() {
+        duration = Duration();
+      });
+    }
+
+    setState(() {
+      timer?.cancel();
+    });
+  }
+
+  Widget _buildCountUpTime() {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+
+    return Text('$minutes:$seconds', style: TextStyle(fontSize: 50));
+  }
+
   Widget _buildUI() {
     return SizedBox(
       width: MediaQuery.sizeOf(context).width,
@@ -127,13 +170,7 @@ class _HomeState extends State<Home> {
 
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            ListAudio(),
-
-            Text('00:00:00', style: TextStyle(fontSize: 50)),
-
-            _buildIcons(),
-          ],
+          children: [ListAudio(), _buildCountUpTime(), _buildActionButtons()],
         ),
       ),
     );
