@@ -1,16 +1,34 @@
-# record_audio
+# 🎙️ Record Audio App
 
-A new Flutter project.
+Aplicativo desenvolvido em Flutter para **gravar**, **reproduzir**, **listar** e **gerenciar áudios**. Ideal para protótipos de memos de voz, gravações de entrevistas ou lembretes rápidos.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 📱 Principais Funcionalidades
 
-A few resources to get you started if this is your first Flutter project:
+- 🎤 Gravação de áudio com controle de pausa e parada.
+- 📂 Listagem de áudios salvos localmente.
+- ▶️ Reprodução simples com botões intuitivos.
+- 🧹 Botão "back" para descartar uma gravação.
+- ⏱️ Timer em destaque durante a gravação (em desenvolvimento).
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 📸 Layout
+
+Design com estilo limpo baseado em protótipos criados no **Figma**. O foco está na simplicidade de uso com uma interface centralizada e bem espaçada.
+
+
+https://www.figma.com/design/XbQ29pahGatY2jTlyZh7mw/Record-Audio?node-id=2-2&p=f&t=Bz6NigY1KTP8yLRt-0
+---
+
+## 📦 Dependências
+
+```yaml
+dependencies:
+  flutter:
+    sdk: flutter
+  record: ^5.0.0
+  just_audio: ^0.9.33
+  path_provider: ^2.1.1
+  path: ^1.8.3
