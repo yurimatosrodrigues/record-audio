@@ -9,6 +9,7 @@ import 'package:path/path.dart' as p;
 
 import 'package:record/record.dart';
 import 'package:record_audio/list_audio.dart';
+import 'package:record_audio/model/audio_item_model.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -26,6 +27,10 @@ class _HomeState extends State<Home> {
 
   Duration duration = Duration();
   Timer? timer;
+
+  List<AudioItemModel> audioList = [
+    AudioItemModel(title: 'Audioo 1', path: '', createAt: DateTime.now()),
+  ];
 
   Widget _buildBackIcon() {
     return IconButton(
@@ -170,7 +175,11 @@ class _HomeState extends State<Home> {
 
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: [ListAudio(), _buildCountUpTime(), _buildActionButtons()],
+          children: [
+            ListAudio(audioList: audioList),
+            _buildCountUpTime(),
+            _buildActionButtons(),
+          ],
         ),
       ),
     );

@@ -3,10 +3,9 @@ import 'package:record_audio/menu_widget.dart';
 import 'package:record_audio/model/audio_item_model.dart';
 
 class ListAudio extends StatefulWidget {
-  List<AudioItemModel> audioList = [
-    AudioItemModel(title: 'Audio 1', path: '', createAt: DateTime.now()),
-    AudioItemModel(title: 'Audio 2', path: '', createAt: DateTime.now()),
-  ];
+  const ListAudio({super.key, required this.audioList});
+
+  final List<AudioItemModel> audioList;
 
   @override
   _ListAudioState createState() => _ListAudioState();
