@@ -29,7 +29,8 @@ class _HomeState extends State<Home> {
   Timer? timer;
 
   List<AudioItemModel> audioList = [
-    AudioItemModel(title: 'Audioo 1', path: '', createAt: DateTime.now()),
+    AudioItemModel(title: 'Audio 1', path: '', createAt: DateTime.now()),
+    AudioItemModel(title: 'Audio 2', path: '', createAt: DateTime.now()),
   ];
 
   Widget _buildBackIcon() {
