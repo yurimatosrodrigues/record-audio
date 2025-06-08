@@ -9,6 +9,7 @@ import 'package:path/path.dart' as p;
 
 import 'package:record/record.dart';
 import 'package:record_audio/list_audio.dart';
+import 'package:record_audio/model/audio_item_model.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -18,14 +19,26 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  _HomeState() {
+    _readAudioFiles();
+  }
+
   final AudioRecorder audioRecorder = AudioRecorder();
   final AudioPlayer audioPlayer = AudioPlayer();
 
-  String? recordingPath;
+  String filePath = '';
+
   bool isRecording = false, isPaused = false, isPlaying = false;
 
   Duration duration = Duration();
   Timer? timer;
+
+  List<AudioItemModel> audioList = [];
+
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+    return directory.path;
+  }
 
   Widget _buildBackIcon() {
     return IconButton(
@@ -67,12 +80,21 @@ class _HomeState extends State<Home> {
       icon: const Icon(Icons.mic),
       iconSize: 80,
       color: Colors.red,
-      onPressed: () {
-        setState(() {
-          isRecording = true;
-          isPaused = false;
-          _startTimer();
-        });
+      onPressed: () async {
+        if (await audioRecorder.hasPermission()) {
+          filePath = p.join(
+            await _localPath,
+            'Audio ${audioList.length + 1}.wav',
+          );
+
+          await audioRecorder.start(const RecordConfig(), path: filePath);
+
+          setState(() {
+            isRecording = true;
+            isPaused = false;
+            _startTimer();
+          });
+        }
       },
     );
   }
@@ -95,14 +117,26 @@ class _HomeState extends State<Home> {
     return IconButton(
       icon: Icon(Icons.stop),
       iconSize: 80,
-      onPressed:
-          () => {
+      onPressed: () async {
+        if (isRecording) {
+          String? filePath = await audioRecorder.stop();
+
+          if (filePath != null) {
             setState(() {
+              audioList.add(
+                AudioItemModel(
+                  title: 'Audio ${audioList.length + 1}',
+                  path: filePath,
+                  createAt: DateTime.now(),
+                ),
+              );
               isRecording = false;
               isPaused = false;
               _stopTimer();
-            }),
-          },
+            });
+          }
+        }
+      },
     );
   }
 
@@ -153,6 +187,11 @@ class _HomeState extends State<Home> {
     });
   }
 
+  void _readAudioFiles() async {
+    List files = Directory(await _localPath).listSync();
+    print(files);
+  }
+
   Widget _buildCountUpTime() {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
     final minutes = twoDigits(duration.inMinutes.remainder(60));
@@ -170,7 +209,11 @@ class _HomeState extends State<Home> {
 
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: [ListAudio(), _buildCountUpTime(), _buildActionButtons()],
+          children: [
+            ListAudio(audioList: audioList),
+            _buildCountUpTime(),
+            _buildActionButtons(),
+          ],
         ),
       ),
     );

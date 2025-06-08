@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class Menu extends StatefulWidget {
+  const Menu({super.key});
+
   @override
   _MenuState createState() => _MenuState();
 }
