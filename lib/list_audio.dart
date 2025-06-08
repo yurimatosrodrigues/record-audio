@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:record_audio/menu_widget.dart';
+import 'package:record_audio/model/audio_item_model.dart';
 
 class ListAudio extends StatefulWidget {
+  List<AudioItemModel> audioList = [
+    AudioItemModel(title: 'Audio 1', path: '', createAt: DateTime.now()),
+    AudioItemModel(title: 'Audio 2', path: '', createAt: DateTime.now()),
+  ];
+
   @override
   _ListAudioState createState() => _ListAudioState();
 }
@@ -12,10 +18,11 @@ class _ListAudioState extends State<ListAudio> {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.7,
       child: Container(
-        child: ListView(
-          padding: EdgeInsets.fromLTRB(10, 50, 10, 10),
-          children: <Widget>[
-            Container(
+        child: ListView.builder(
+          itemCount: widget.audioList.length,
+
+          itemBuilder: (context, index) {
+            return Container(
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
@@ -32,13 +39,16 @@ class _ListAudioState extends State<ListAudio> {
                     onPressed: () => {},
                   ),
                   Expanded(
-                    child: Text('Audio 1', style: TextStyle(fontSize: 25)),
+                    child: Text(
+                      widget.audioList[index].title,
+                      style: TextStyle(fontSize: 25),
+                    ),
                   ),
                   Menu(),
                 ],
               ),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
