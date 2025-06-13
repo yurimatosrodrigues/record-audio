@@ -19,14 +19,16 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  _HomeState() {
+  @override
+  void initState() {
+    super.initState();
     _readAudioFiles();
   }
 
   final AudioRecorder audioRecorder = AudioRecorder();
   final AudioPlayer audioPlayer = AudioPlayer();
 
-  String filePath = '';
+  String filePath = '', currentAudioPlaying = '';
 
   bool isRecording = false, isPaused = false, isPlaying = false;
 
@@ -56,6 +58,7 @@ class _HomeState extends State<Home> {
                     child: Text('Yes'),
                     onPressed: () {
                       Navigator.of(context).pop();
+                      audioRecorder.cancel();
                       setState(() {
                         isRecording = false;
                         _stopTimer();
@@ -189,7 +192,34 @@ class _HomeState extends State<Home> {
 
   void _readAudioFiles() async {
     List files = Directory(await _localPath).listSync();
-    print(files);
+    for (var element in files) {
+      if (element is File) {
+        if (element.path.endsWith('.wav')) {
+          audioList.add(
+            AudioItemModel(
+              title: element.path.split('/').last.replaceAll('.wav', ''),
+              path: element.path,
+              createAt: element.lastModifiedSync(),
+            ),
+          );
+          audioList.sort((a, b) => a.title.compareTo(b.title));
+        }
+      }
+    }
+  }
+
+  void _playAudio(AudioItemModel audio) async {
+    if (audioPlayer.playing && currentAudioPlaying == audio.path) {
+      await audioPlayer.pause();
+      return;
+    }
+
+    if (currentAudioPlaying != audio.path) {
+      currentAudioPlaying = audio.path;
+      await audioPlayer.stop();
+      await audioPlayer.setFilePath(audio.path);
+    }
+    await audioPlayer.play();
   }
 
   Widget _buildCountUpTime() {
@@ -210,7 +240,7 @@ class _HomeState extends State<Home> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            ListAudio(audioList: audioList),
+            ListAudio(audioList: audioList, onPlay: _playAudio),
             _buildCountUpTime(),
             _buildActionButtons(),
           ],
