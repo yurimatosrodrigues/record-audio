@@ -19,14 +19,16 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  _HomeState() {
+  @override
+  void initState() {
+    super.initState();
     _readAudioFiles();
   }
 
   final AudioRecorder audioRecorder = AudioRecorder();
   final AudioPlayer audioPlayer = AudioPlayer();
 
-  String filePath = '';
+  String filePath = '', currentAudioPlaying = '';
 
   bool isRecording = false, isPaused = false, isPlaying = false;
 
@@ -206,6 +208,20 @@ class _HomeState extends State<Home> {
     }
   }
 
+  void _playAudio(AudioItemModel audio) async {
+    if (audioPlayer.playing && currentAudioPlaying == audio.path) {
+      await audioPlayer.pause();
+      return;
+    }
+
+    if (currentAudioPlaying != audio.path) {
+      currentAudioPlaying = audio.path;
+      await audioPlayer.stop();
+      await audioPlayer.setFilePath(audio.path);
+    }
+    await audioPlayer.play();
+  }
+
   Widget _buildCountUpTime() {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
     final minutes = twoDigits(duration.inMinutes.remainder(60));
@@ -224,7 +240,7 @@ class _HomeState extends State<Home> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            ListAudio(audioList: audioList),
+            ListAudio(audioList: audioList, onPlay: _playAudio),
             _buildCountUpTime(),
             _buildActionButtons(),
           ],
