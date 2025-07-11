@@ -3,10 +3,16 @@ import 'package:record_audio/audio_item_widget.dart';
 import 'package:record_audio/model/audio_item_model.dart';
 
 class ListAudio extends StatefulWidget {
-  const ListAudio({super.key, required this.audioList, required this.onPlay});
+  const ListAudio({
+    super.key,
+    required this.audioList,
+    required this.onPlay,
+    required this.onCompleteAction,
+  });
 
   final List<AudioItemModel> audioList;
   final void Function(AudioItemModel) onPlay;
+  final VoidCallback onCompleteAction;
 
   @override
   _ListAudioState createState() => _ListAudioState();
@@ -24,6 +30,7 @@ class _ListAudioState extends State<ListAudio> {
           return AudioItem(
             audioItemModel: widget.audioList[index],
             onPlay: widget.onPlay,
+            onCompleteAction: widget.onCompleteAction,
           );
         },
       ),

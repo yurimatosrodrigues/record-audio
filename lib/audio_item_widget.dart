@@ -8,10 +8,12 @@ class AudioItem extends StatefulWidget {
     super.key,
     required this.audioItemModel,
     required this.onPlay,
+    required this.onCompleteAction,
   });
 
   final AudioItemModel audioItemModel;
   final void Function(AudioItemModel) onPlay;
+  final VoidCallback onCompleteAction;
 
   @override
   _AudioItemState createState() => _AudioItemState();
@@ -71,7 +73,10 @@ class _AudioItemState extends State<AudioItem> {
               style: TextStyle(fontSize: 25),
             ),
           ),
-          Menu(),
+          Menu(
+            audioItemModel: widget.audioItemModel,
+            onCompleteAction: widget.onCompleteAction,
+          ),
         ],
       ),
     );
