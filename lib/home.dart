@@ -228,6 +228,22 @@ class _HomeState extends State<Home> {
     }
 
     if (currentAudioPlaying != audio.path) {
+      //caso esteja reproduzindo algum outro audio
+      final currentlyPlaying = audioList.firstWhere(
+        (a) => a.isPlaying,
+        orElse:
+            () => AudioItemModel(
+              title: '',
+              path: '',
+              createAt: DateTime.now(),
+              isPlaying: false,
+            ),
+      );
+
+      setState(() {
+        currentlyPlaying.isPlaying = false;
+      });
+
       await audioPlayer.stop();
       await audioPlayer.setFilePath(audio.path);
       currentAudioPlaying = audio.path;
