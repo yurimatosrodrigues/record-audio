@@ -18,15 +18,13 @@ class AudioItem extends StatefulWidget {
 }
 
 class _AudioItemState extends State<AudioItem> {
-  bool isPlaying = false;
-
   Widget _buildPlayIcon() {
     return IconButton(
       icon: Icon(Icons.play_arrow, size: 45),
       onPressed: () {
         widget.onPlay(widget.audioItemModel);
         setState(() {
-          isPlaying = true;
+          widget.audioItemModel.isPlaying = true;
         });
       },
     );
@@ -38,14 +36,14 @@ class _AudioItemState extends State<AudioItem> {
       onPressed: () {
         widget.onPlay(widget.audioItemModel);
         setState(() {
-          isPlaying = false;
+          widget.audioItemModel.isPlaying = false;
         });
       },
     );
   }
 
   Widget _builActionButtons() {
-    if (isPlaying) {
+    if (widget.audioItemModel.isPlaying) {
       return _buildPauseIcon();
     } else {
       return _buildPlayIcon();

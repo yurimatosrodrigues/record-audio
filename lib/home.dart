@@ -37,6 +37,8 @@ class _HomeState extends State<Home> {
 
   List<AudioItemModel> audioList = [];
 
+  StreamSubscription<PlayerState>? listener;
+
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
     return directory.path;
@@ -131,6 +133,7 @@ class _HomeState extends State<Home> {
                   title: 'Audio ${audioList.length + 1}',
                   path: filePath,
                   createAt: DateTime.now(),
+                  isPlaying: false,
                 ),
               );
               isRecording = false;
@@ -200,6 +203,7 @@ class _HomeState extends State<Home> {
               title: element.path.split('/').last.replaceAll('.wav', ''),
               path: element.path,
               createAt: element.lastModifiedSync(),
+              isPlaying: false,
             ),
           );
           audioList.sort((a, b) => a.title.compareTo(b.title));
@@ -209,17 +213,36 @@ class _HomeState extends State<Home> {
   }
 
   void _playAudio(AudioItemModel audio) async {
-    if (audioPlayer.playing && currentAudioPlaying == audio.path) {
+    if (audio.isPlaying && currentAudioPlaying == audio.path) {
       await audioPlayer.pause();
+      setState(() {
+        audio.isPlaying = false;
+      });
       return;
     }
 
+    //quando reproduz o mesmo áudio
+    if (currentAudioPlaying == audio.path &&
+        audioPlayer.playerState.processingState == ProcessingState.completed) {
+      await audioPlayer.seek(Duration.zero);
+    }
+
     if (currentAudioPlaying != audio.path) {
-      currentAudioPlaying = audio.path;
       await audioPlayer.stop();
       await audioPlayer.setFilePath(audio.path);
+      currentAudioPlaying = audio.path;
     }
     await audioPlayer.play();
+
+    await listener?.cancel();
+
+    listener = audioPlayer.playerStateStream.listen((state) {
+      if (state.processingState == ProcessingState.completed) {
+        setState(() {
+          audio.isPlaying = false;
+        });
+      }
+    });
   }
 
   Widget _buildCountUpTime() {
