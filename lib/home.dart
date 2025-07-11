@@ -10,6 +10,7 @@ import 'package:path/path.dart' as p;
 import 'package:record/record.dart';
 import 'package:record_audio/list_audio.dart';
 import 'package:record_audio/model/audio_item_model.dart';
+import 'package:intl/intl.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -87,10 +88,7 @@ class _HomeState extends State<Home> {
       color: Colors.red,
       onPressed: () async {
         if (await audioRecorder.hasPermission()) {
-          filePath = p.join(
-            await _localPath,
-            'Audio ${audioList.length + 1}.wav',
-          );
+          filePath = await _audioName();
 
           await audioRecorder.start(const RecordConfig(), path: filePath);
 
@@ -130,7 +128,7 @@ class _HomeState extends State<Home> {
             setState(() {
               audioList.add(
                 AudioItemModel(
-                  title: 'Audio ${audioList.length + 1}',
+                  title: filePath.split('/').last.replaceAll('.wav', ''),
                   path: filePath,
                   createAt: DateTime.now(),
                   isPlaying: false,
@@ -266,6 +264,15 @@ class _HomeState extends State<Home> {
     setState(() {
       _readAudioFiles();
     });
+  }
+
+  Future<String> _audioName() async {
+    DateFormat format = DateFormat("yyyy-MM-dd-HHmmss");
+    String formatted = format.format(DateTime.now());
+
+    print('******' + p.join(await _localPath, 'Audio $formatted.wav'));
+
+    return p.join(await _localPath, 'Audio $formatted.wav');
   }
 
   Widget _buildCountUpTime() {
