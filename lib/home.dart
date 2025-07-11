@@ -194,6 +194,7 @@ class _HomeState extends State<Home> {
   }
 
   void _readAudioFiles() async {
+    audioList = [];
     List files = Directory(await _localPath).listSync();
     for (var element in files) {
       if (element is File) {
@@ -261,6 +262,12 @@ class _HomeState extends State<Home> {
     });
   }
 
+  void onCompleteAction() {
+    setState(() {
+      _readAudioFiles();
+    });
+  }
+
   Widget _buildCountUpTime() {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
     final minutes = twoDigits(duration.inMinutes.remainder(60));
@@ -279,7 +286,11 @@ class _HomeState extends State<Home> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            ListAudio(audioList: audioList, onPlay: _playAudio),
+            ListAudio(
+              audioList: audioList,
+              onPlay: _playAudio,
+              onCompleteAction: onCompleteAction,
+            ),
             _buildCountUpTime(),
             _buildActionButtons(),
           ],
