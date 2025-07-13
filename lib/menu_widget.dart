@@ -18,6 +18,29 @@ class Menu extends StatefulWidget {
 }
 
 class _MenuState extends State<Menu> {
+  late TextEditingController _titleController;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    super.dispose();
+  }
+
+  void changeFileNameOnly(String filePath, String newFileName) {
+    File file = File(filePath);
+    String path = file.path;
+    var lastSeparator = path.lastIndexOf(Platform.pathSeparator);
+    var newPath = path.substring(0, lastSeparator + 1) + newFileName;
+    file.rename(newPath);
+    return;
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
@@ -29,8 +52,35 @@ class _MenuState extends State<Menu> {
                   () => {
                     showDialog(
                       context: context,
-                      builder: (BuildContext) {
-                        return SimpleDialog(title: Text('tst'));
+                      builder: (_) {
+                        return AlertDialog(
+                          title: Text('Rename audio'),
+                          content: TextField(
+                            controller: _titleController,
+                            autofocus: true,
+                            decoration: InputDecoration(
+                              hintText: 'Enter the new name',
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                changeFileNameOnly(
+                                  widget.audioItemModel.path,
+                                  "${_titleController.text}.wav",
+                                );
+                                widget.onCompleteAction();
+                              },
+                              child: Text('Save'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('Cancel'),
+                            ),
+                          ],
+                        );
                       },
                     ),
                   },

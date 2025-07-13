@@ -166,10 +166,8 @@ class _HomeState extends State<Home> {
   }
 
   void _addTime() {
-    final addSeconds = 1;
-
     setState(() {
-      final seconds = duration.inSeconds + addSeconds;
+      final seconds = duration.inSeconds + 1;
 
       duration = Duration(seconds: seconds);
     });
@@ -269,9 +267,6 @@ class _HomeState extends State<Home> {
   Future<String> _audioName() async {
     DateFormat format = DateFormat("yyyy-MM-dd-HHmmss");
     String formatted = format.format(DateTime.now());
-
-    print('******' + p.join(await _localPath, 'Audio $formatted.wav'));
-
     return p.join(await _localPath, 'Audio $formatted.wav');
   }
 
@@ -284,23 +279,24 @@ class _HomeState extends State<Home> {
   }
 
   Widget _buildUI() {
-    return SizedBox(
-      width: MediaQuery.sizeOf(context).width,
-      height: MediaQuery.sizeOf(context).height,
-      child: Container(
-        color: Colors.white,
-
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            ListAudio(
-              audioList: audioList,
-              onPlay: _playAudio,
-              onCompleteAction: onCompleteAction,
-            ),
-            _buildCountUpTime(),
-            _buildActionButtons(),
-          ],
+    return SingleChildScrollView(
+      child: SizedBox(
+        width: MediaQuery.sizeOf(context).width,
+        height: MediaQuery.sizeOf(context).height,
+        child: Container(
+          color: Colors.white,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              ListAudio(
+                audioList: audioList,
+                onPlay: _playAudio,
+                onCompleteAction: onCompleteAction,
+              ),
+              _buildCountUpTime(),
+              _buildActionButtons(),
+            ],
+          ),
         ),
       ),
     );
