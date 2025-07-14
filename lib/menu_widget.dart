@@ -69,6 +69,7 @@ class _MenuState extends State<Menu> {
                                   widget.audioItemModel.path,
                                   "${_titleController.text}.wav",
                                 );
+                                Navigator.of(context).pop();
                                 widget.onCompleteAction();
                               },
                               child: Text('Save'),
