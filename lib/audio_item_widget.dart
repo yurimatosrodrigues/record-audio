@@ -58,7 +58,7 @@ class _AudioItemState extends State<AudioItem> {
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: Color.fromARGB(255, 14, 135, 230),
+            color: Color.fromARGB(255, 135, 171, 202),
             width: 1,
           ),
         ),

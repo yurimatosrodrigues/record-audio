@@ -65,6 +65,7 @@ class _HomeState extends State<Home> {
                       setState(() {
                         isRecording = false;
                         _stopTimer();
+                        filePath = "";
                       });
                     },
                   ),
@@ -88,9 +89,12 @@ class _HomeState extends State<Home> {
       color: Colors.red,
       onPressed: () async {
         if (await audioRecorder.hasPermission()) {
-          filePath = await _audioName();
-
-          await audioRecorder.start(const RecordConfig(), path: filePath);
+          if (isPaused) {
+            await audioRecorder.resume();
+          } else {
+            filePath = await _audioName();
+            await audioRecorder.start(const RecordConfig(), path: filePath);
+          }
 
           setState(() {
             isRecording = true;
@@ -106,13 +110,13 @@ class _HomeState extends State<Home> {
     return IconButton(
       icon: Icon(Icons.pause),
       iconSize: 80,
-      onPressed:
-          () => {
-            setState(() {
-              isPaused = true;
-              _stopTimer(reset: false);
-            }),
-          },
+      onPressed: () {
+        setState(() {
+          isPaused = true;
+          audioRecorder.pause();
+          _stopTimer(reset: false);
+        });
+      },
     );
   }
 
@@ -122,14 +126,17 @@ class _HomeState extends State<Home> {
       iconSize: 80,
       onPressed: () async {
         if (isRecording) {
-          String? filePath = await audioRecorder.stop();
+          String? recordedFilePath = await audioRecorder.stop();
 
-          if (filePath != null) {
+          if (recordedFilePath != null) {
             setState(() {
               audioList.add(
                 AudioItemModel(
-                  title: filePath.split('/').last.replaceAll('.wav', ''),
-                  path: filePath,
+                  title: recordedFilePath
+                      .split('/')
+                      .last
+                      .replaceAll('.wav', ''),
+                  path: recordedFilePath,
                   createAt: DateTime.now(),
                   isPlaying: false,
                 ),
@@ -137,6 +144,7 @@ class _HomeState extends State<Home> {
               isRecording = false;
               isPaused = false;
               _stopTimer();
+              filePath = "";
             });
           }
         }
@@ -166,10 +174,8 @@ class _HomeState extends State<Home> {
   }
 
   void _addTime() {
-    final addSeconds = 1;
-
     setState(() {
-      final seconds = duration.inSeconds + addSeconds;
+      final seconds = duration.inSeconds + 1;
 
       duration = Duration(seconds: seconds);
     });
@@ -269,9 +275,6 @@ class _HomeState extends State<Home> {
   Future<String> _audioName() async {
     DateFormat format = DateFormat("yyyy-MM-dd-HHmmss");
     String formatted = format.format(DateTime.now());
-
-    print('******' + p.join(await _localPath, 'Audio $formatted.wav'));
-
     return p.join(await _localPath, 'Audio $formatted.wav');
   }
 
@@ -284,23 +287,31 @@ class _HomeState extends State<Home> {
   }
 
   Widget _buildUI() {
-    return SizedBox(
-      width: MediaQuery.sizeOf(context).width,
-      height: MediaQuery.sizeOf(context).height,
-      child: Container(
-        color: Colors.white,
-
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            ListAudio(
-              audioList: audioList,
-              onPlay: _playAudio,
-              onCompleteAction: onCompleteAction,
-            ),
-            _buildCountUpTime(),
-            _buildActionButtons(),
-          ],
+    return SingleChildScrollView(
+      child: SizedBox(
+        width: MediaQuery.sizeOf(context).width,
+        height: MediaQuery.sizeOf(context).height,
+        child: Container(
+          color: Colors.white,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              ListAudio(
+                audioList: audioList,
+                onPlay: _playAudio,
+                onCompleteAction: onCompleteAction,
+              ),
+              Expanded(
+                flex: 3,
+                child: Container(
+                  color: Color.fromARGB(200, 135, 171, 202),
+                  child: Column(
+                    children: [_buildCountUpTime(), _buildActionButtons()],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
