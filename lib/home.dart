@@ -293,8 +293,15 @@ class _HomeState extends State<Home> {
                 onPlay: _playAudio,
                 onCompleteAction: onCompleteAction,
               ),
-              _buildCountUpTime(),
-              _buildActionButtons(),
+              Expanded(
+                flex: 3,
+                child: Container(
+                  color: Color.fromARGB(200, 135, 171, 202),
+                  child: Column(
+                    children: [_buildCountUpTime(), _buildActionButtons()],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
