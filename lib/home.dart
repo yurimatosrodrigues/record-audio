@@ -65,6 +65,7 @@ class _HomeState extends State<Home> {
                       setState(() {
                         isRecording = false;
                         _stopTimer();
+                        filePath = "";
                       });
                     },
                   ),
@@ -88,9 +89,12 @@ class _HomeState extends State<Home> {
       color: Colors.red,
       onPressed: () async {
         if (await audioRecorder.hasPermission()) {
-          filePath = await _audioName();
-
-          await audioRecorder.start(const RecordConfig(), path: filePath);
+          if (isPaused) {
+            await audioRecorder.resume();
+          } else {
+            filePath = await _audioName();
+            await audioRecorder.start(const RecordConfig(), path: filePath);
+          }
 
           setState(() {
             isRecording = true;
@@ -106,13 +110,13 @@ class _HomeState extends State<Home> {
     return IconButton(
       icon: Icon(Icons.pause),
       iconSize: 80,
-      onPressed:
-          () => {
-            setState(() {
-              isPaused = true;
-              _stopTimer(reset: false);
-            }),
-          },
+      onPressed: () {
+        setState(() {
+          isPaused = true;
+          audioRecorder.pause();
+          _stopTimer(reset: false);
+        });
+      },
     );
   }
 
@@ -122,14 +126,17 @@ class _HomeState extends State<Home> {
       iconSize: 80,
       onPressed: () async {
         if (isRecording) {
-          String? filePath = await audioRecorder.stop();
+          String? recordedFilePath = await audioRecorder.stop();
 
-          if (filePath != null) {
+          if (recordedFilePath != null) {
             setState(() {
               audioList.add(
                 AudioItemModel(
-                  title: filePath.split('/').last.replaceAll('.wav', ''),
-                  path: filePath,
+                  title: recordedFilePath
+                      .split('/')
+                      .last
+                      .replaceAll('.wav', ''),
+                  path: recordedFilePath,
                   createAt: DateTime.now(),
                   isPlaying: false,
                 ),
@@ -137,6 +144,7 @@ class _HomeState extends State<Home> {
               isRecording = false;
               isPaused = false;
               _stopTimer();
+              filePath = "";
             });
           }
         }
