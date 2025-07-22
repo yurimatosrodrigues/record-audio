@@ -69,6 +69,7 @@ class _MenuState extends State<Menu> {
                                   widget.audioItemModel.path,
                                   "${_titleController.text}.wav",
                                 );
+                                _titleController.text = '';
                                 Navigator.of(context).pop();
                                 widget.onCompleteAction();
                               },
@@ -76,6 +77,7 @@ class _MenuState extends State<Menu> {
                             ),
                             TextButton(
                               onPressed: () {
+                                _titleController.text = '';
                                 Navigator.of(context).pop();
                               },
                               child: Text('Cancel'),
