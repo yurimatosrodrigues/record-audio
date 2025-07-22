@@ -212,7 +212,7 @@ class _HomeState extends State<Home> {
               isPlaying: false,
             ),
           );
-          audioList.sort((a, b) => a.title.compareTo(b.title));
+          audioList.sort((a, b) => a.createAt.compareTo(b.createAt));
         }
       }
     }
