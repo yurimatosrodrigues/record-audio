@@ -64,6 +64,7 @@ class _HomeState extends State<Home> {
                       audioRecorder.cancel();
                       setState(() {
                         isRecording = false;
+                        isPaused = false;
                         _stopTimer();
                         filePath = "";
                       });
@@ -125,7 +126,7 @@ class _HomeState extends State<Home> {
       icon: Icon(Icons.stop),
       iconSize: 80,
       onPressed: () async {
-        if (isRecording) {
+        if (isRecording || isPaused) {
           String? recordedFilePath = await audioRecorder.stop();
 
           if (recordedFilePath != null) {
