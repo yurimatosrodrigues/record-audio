@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:record_audio/model/audio_item_model.dart';
+import 'package:share_plus/share_plus.dart';
 import 'dart:io';
 
 class Menu extends StatefulWidget {
@@ -39,6 +40,14 @@ class _MenuState extends State<Menu> {
     var newPath = path.substring(0, lastSeparator + 1) + newFileName;
     file.rename(newPath);
     return;
+  }
+
+  void _shareAudio() async {
+    final params = ShareParams(
+      text: 'Recorder Audio',
+      files: [XFile(widget.audioItemModel.path)],
+    );
+    await SharePlus.instance.share(params);
   }
 
   @override
@@ -89,18 +98,7 @@ class _MenuState extends State<Menu> {
                   },
             ),
 
-            PopupMenuItem(
-              child: Text('Share'),
-              onTap:
-                  () => {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext) {
-                        return SimpleDialog(title: Text('tst'));
-                      },
-                    ),
-                  },
-            ),
+            PopupMenuItem(child: Text('Share'), onTap: () => {_shareAudio()}),
 
             PopupMenuItem(
               child: Text('Delete'),
