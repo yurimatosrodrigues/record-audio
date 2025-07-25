@@ -198,7 +198,7 @@ class _HomeState extends State<Home> {
     });
   }
 
-  void _readAudioFiles() async {
+  Future<void> _readAudioFiles() async {
     audioList = [];
     List files = Directory(await _localPath).listSync();
     for (var element in files) {
@@ -267,10 +267,9 @@ class _HomeState extends State<Home> {
     });
   }
 
-  void onCompleteAction() {
-    setState(() {
-      _readAudioFiles();
-    });
+  void onCompleteAction() async {
+    await _readAudioFiles();
+    setState(() {});
   }
 
   Future<String> _audioName() async {
