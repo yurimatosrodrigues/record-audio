@@ -53,10 +53,22 @@ class _MenuState extends State<Menu> {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
+      iconColor: Color.fromARGB(255, 92, 120, 160),
       itemBuilder:
           (context) => [
             PopupMenuItem(
-              child: Text('Rename'),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Icon(
+                    Icons.edit,
+                    size: 20,
+                    color: Color.fromARGB(255, 92, 120, 160),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(child: Text('Rename', textAlign: TextAlign.left)),
+                ],
+              ),
               onTap:
                   () => {
                     showDialog(
@@ -98,10 +110,35 @@ class _MenuState extends State<Menu> {
                   },
             ),
 
-            PopupMenuItem(child: Text('Share'), onTap: () => {_shareAudio()}),
+            PopupMenuItem(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Icon(
+                    Icons.share,
+                    size: 20,
+                    color: Color.fromARGB(255, 92, 120, 160),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(child: Text('Share', textAlign: TextAlign.left)),
+                ],
+              ),
+              onTap: () => {_shareAudio()},
+            ),
 
             PopupMenuItem(
-              child: Text('Delete'),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Icon(
+                    Icons.delete,
+                    size: 20,
+                    color: Color.fromARGB(255, 92, 120, 160),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(child: Text('Delete', textAlign: TextAlign.left)),
+                ],
+              ),
               onTap:
                   () => {
                     showDialog(

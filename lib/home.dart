@@ -304,7 +304,7 @@ class _HomeState extends State<Home> {
               Expanded(
                 flex: 3,
                 child: Container(
-                  color: Color.fromARGB(200, 135, 171, 202),
+                  color: Color.fromARGB(255, 135, 171, 202),
                   child: Column(
                     children: [_buildCountUpTime(), _buildActionButtons()],
                   ),
