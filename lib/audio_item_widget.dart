@@ -22,7 +22,11 @@ class AudioItem extends StatefulWidget {
 class _AudioItemState extends State<AudioItem> {
   Widget _buildPlayIcon() {
     return IconButton(
-      icon: Icon(Icons.play_arrow, size: 45),
+      icon: Icon(
+        Icons.play_arrow,
+        size: 45,
+        color: Color.fromARGB(255, 92, 120, 160),
+      ),
       onPressed: () {
         widget.onPlay(widget.audioItemModel);
         setState(() {
@@ -34,7 +38,11 @@ class _AudioItemState extends State<AudioItem> {
 
   Widget _buildPauseIcon() {
     return IconButton(
-      icon: Icon(Icons.pause, size: 45),
+      icon: Icon(
+        Icons.pause,
+        size: 45,
+        color: Color.fromARGB(255, 92, 120, 160),
+      ),
       onPressed: () {
         widget.onPlay(widget.audioItemModel);
         setState(() {

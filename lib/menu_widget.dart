@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:record_audio/model/audio_item_model.dart';
+import 'package:share_plus/share_plus.dart';
 import 'dart:io';
 
 class Menu extends StatefulWidget {
@@ -41,13 +42,33 @@ class _MenuState extends State<Menu> {
     return;
   }
 
+  void _shareAudio() async {
+    final params = ShareParams(
+      text: 'Recorder Audio',
+      files: [XFile(widget.audioItemModel.path)],
+    );
+    await SharePlus.instance.share(params);
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
+      iconColor: Color.fromARGB(255, 92, 120, 160),
       itemBuilder:
           (context) => [
             PopupMenuItem(
-              child: Text('Rename'),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Icon(
+                    Icons.edit,
+                    size: 20,
+                    color: Color.fromARGB(255, 92, 120, 160),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(child: Text('Rename', textAlign: TextAlign.left)),
+                ],
+              ),
               onTap:
                   () => {
                     showDialog(
@@ -90,20 +111,34 @@ class _MenuState extends State<Menu> {
             ),
 
             PopupMenuItem(
-              child: Text('Share'),
-              onTap:
-                  () => {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext) {
-                        return SimpleDialog(title: Text('tst'));
-                      },
-                    ),
-                  },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Icon(
+                    Icons.share,
+                    size: 20,
+                    color: Color.fromARGB(255, 92, 120, 160),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(child: Text('Share', textAlign: TextAlign.left)),
+                ],
+              ),
+              onTap: () => {_shareAudio()},
             ),
 
             PopupMenuItem(
-              child: Text('Delete'),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Icon(
+                    Icons.delete,
+                    size: 20,
+                    color: Color.fromARGB(255, 92, 120, 160),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(child: Text('Delete', textAlign: TextAlign.left)),
+                ],
+              ),
               onTap:
                   () => {
                     showDialog(
