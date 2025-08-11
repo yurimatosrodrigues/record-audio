@@ -33,12 +33,16 @@ class _MenuState extends State<Menu> {
     super.dispose();
   }
 
-  void changeFileNameOnly(String filePath, String newFileName) {
+  void changeFileName(String filePath, String newFileName) {
     File file = File(filePath);
     String path = file.path;
     var lastSeparator = path.lastIndexOf(Platform.pathSeparator);
     var newPath = path.substring(0, lastSeparator + 1) + newFileName;
     file.rename(newPath);
+
+    _titleController.text = '';
+    Navigator.of(context).pop();
+    widget.onCompleteAction();
     return;
   }
 
@@ -48,6 +52,10 @@ class _MenuState extends State<Menu> {
       files: [XFile(widget.audioItemModel.path)],
     );
     await SharePlus.instance.share(params);
+  }
+
+  Widget _fileNameError(String message) {
+    return Text(message, style: TextStyle(color: Colors.red));
   }
 
   @override
@@ -74,36 +82,57 @@ class _MenuState extends State<Menu> {
                     showDialog(
                       context: context,
                       builder: (_) {
-                        return AlertDialog(
-                          title: Text('Rename audio'),
-                          content: TextField(
-                            controller: _titleController,
-                            autofocus: true,
-                            decoration: InputDecoration(
-                              hintText: 'Enter the new name',
-                            ),
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                changeFileNameOnly(
-                                  widget.audioItemModel.path,
-                                  "${_titleController.text}.wav",
-                                );
-                                _titleController.text = '';
-                                Navigator.of(context).pop();
-                                widget.onCompleteAction();
-                              },
-                              child: Text('Save'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                _titleController.text = '';
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('Cancel'),
-                            ),
-                          ],
+                        String _message = "";
+
+                        return StatefulBuilder(
+                          builder: (context, setState) {
+                            return AlertDialog(
+                              title: Text('Rename audio'),
+                              content: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  TextField(
+                                    controller: _titleController,
+                                    autofocus: true,
+                                    decoration: InputDecoration(
+                                      hintText: 'Enter the new name',
+                                    ),
+                                  ),
+                                  if (_message != "") _fileNameError(_message),
+                                ],
+                              ),
+
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    if (_titleController.text.replaceAll(
+                                          '.wav',
+                                          '',
+                                        ) ==
+                                        "") {
+                                      setState(() {
+                                        _message = "Invalid name.";
+                                      });
+                                    } else {
+                                      changeFileName(
+                                        widget.audioItemModel.path,
+                                        "${_titleController.text}.wav",
+                                      );
+                                    }
+                                  },
+                                  child: Text('Save'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    _titleController.text = '';
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Cancel'),
+                                ),
+                              ],
+                            );
+                          },
                         );
                       },
                     ),
